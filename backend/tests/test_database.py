@@ -1,6 +1,5 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
-import pytest
 from cryptography.fernet import Fernet
 
 from crypto import encrypt_value

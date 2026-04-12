@@ -24,7 +24,9 @@ class Orchestrator:
         self._scorer = scorer
         self._db = research_db
 
-    async def run(self, input_data: ResearchInput, research_id: str) -> AsyncGenerator[SSEEvent, None]:
+    async def run(
+        self, input_data: ResearchInput, research_id: str,
+    ) -> AsyncGenerator[SSEEvent, None]:
         self._db.update_status(research_id, "running")
 
         # Step 1: Researcher

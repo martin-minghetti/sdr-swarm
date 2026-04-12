@@ -2,7 +2,6 @@ from cryptography.fernet import Fernet
 
 from crypto import decrypt_value, encrypt_value, mask_key
 
-
 # Generate a valid Fernet key for tests
 TEST_KEY = Fernet.generate_key().decode()
 

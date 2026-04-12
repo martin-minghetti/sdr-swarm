@@ -27,7 +27,8 @@ Be precise about confidence levels:
 - "medium": fact from one reliable source
 - "low": inferred or from unreliable source
 
-Include ALL sources in raw_sources. Set website_extractable to false if no website content was provided."""
+Include ALL sources in raw_sources.
+Set website_extractable to false if no website content was provided."""
 
 
 class ResearcherAgent:
@@ -42,7 +43,9 @@ class ResearcherAgent:
     async def run_async(self, input_data: ResearchInput) -> CompanyProfile:
         start = time.monotonic()
         queries = self._generate_queries(input_data)
-        search_results, scraper_result, apollo_result = await self._gather_data(queries, input_data.company_url)
+        search_results, scraper_result, apollo_result = await self._gather_data(
+            queries, input_data.company_url,
+        )
         raw_context = self._build_context(search_results, scraper_result, apollo_result)
         profile = self._synthesize(input_data.company_name, raw_context)
         self.last_duration_ms = int((time.monotonic() - start) * 1000)
@@ -91,14 +94,28 @@ class ResearcherAgent:
             for r in search_results:
                 parts.append(f"**{r.title}** ({r.url})\n{r.content}\n")
         if scraper_result and scraper_result.extractable:
-            parts.append(f"## Company Website Content\nTitle: {scraper_result.title}\n{scraper_result.text}\n")
-        elif scraper_result and not scraper_result.extractable:
-            parts.append("## Company Website\nNote: Website uses client-side rendering. No content extracted.\n")
-        if apollo_result:
             parts.append(
-                f"## Apollo Enrichment Data\nName: {apollo_result.name}\nIndustry: {apollo_result.industry}\n"
-                f"Employees: {apollo_result.estimated_num_employees}\nRevenue: {apollo_result.annual_revenue_printed}\n"
-                f"Technologies: {', '.join(apollo_result.technologies)}\nKeywords: {', '.join(apollo_result.keywords)}\n"
+                f"## Company Website Content\n"
+                f"Title: {scraper_result.title}\n"
+                f"{scraper_result.text}\n"
+            )
+        elif scraper_result and not scraper_result.extractable:
+            parts.append(
+                "## Company Website\n"
+                "Note: Website uses client-side rendering. "
+                "No content extracted.\n"
+            )
+        if apollo_result:
+            techs = ', '.join(apollo_result.technologies)
+            keywords = ', '.join(apollo_result.keywords)
+            parts.append(
+                f"## Apollo Enrichment Data\n"
+                f"Name: {apollo_result.name}\n"
+                f"Industry: {apollo_result.industry}\n"
+                f"Employees: {apollo_result.estimated_num_employees}\n"
+                f"Revenue: {apollo_result.annual_revenue_printed}\n"
+                f"Technologies: {techs}\n"
+                f"Keywords: {keywords}\n"
             )
         return "\n".join(parts) if parts else "No data gathered."
 

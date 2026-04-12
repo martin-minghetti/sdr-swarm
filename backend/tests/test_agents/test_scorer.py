@@ -11,7 +11,8 @@ from services.anthropic_client import AnthropicClient
 
 @pytest.fixture
 def fixtures():
-    return json.loads((Path(__file__).parent.parent / "fixtures" / "claude_responses.json").read_text())
+    fixtures_path = Path(__file__).parent.parent / "fixtures" / "claude_responses.json"
+    return json.loads(fixtures_path.read_text())
 
 
 @pytest.fixture

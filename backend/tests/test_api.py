@@ -1,10 +1,8 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from fastapi.testclient import TestClient
-
-from crypto import encrypt_value
 from cryptography.fernet import Fernet
+from fastapi.testclient import TestClient
 
 TEST_ENCRYPTION_KEY = Fernet.generate_key().decode()
 

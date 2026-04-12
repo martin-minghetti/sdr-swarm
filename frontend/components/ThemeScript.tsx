@@ -6,7 +6,6 @@ export default function ThemeScript() {
   return (
     <script
       // Safe: static string literal, no user input
-      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: themeScript }}
     />
   );

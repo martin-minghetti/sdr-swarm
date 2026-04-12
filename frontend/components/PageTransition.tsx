@@ -9,8 +9,10 @@ export default function PageTransition({ children }: { children: ReactNode }) {
   const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
-    setAnimating(true);
-    setDisplayChildren(children);
+    queueMicrotask(() => {
+      setAnimating(true);
+      setDisplayChildren(children);
+    });
     const timer = setTimeout(() => setAnimating(false), 350);
     return () => clearTimeout(timer);
   }, [pathname, children]);

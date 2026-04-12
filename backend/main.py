@@ -67,9 +67,7 @@ def _build_orchestrator(research_db: ResearchDB, api_keys: dict[str, str]):
     anthropic_client = AnthropicClient(api_key=api_keys.get("anthropic", ""))
     tavily_client = TavilyClient(api_key=api_keys.get("tavily", ""))
     scraper = WebScraper()
-    apollo_client = (
-        ApolloClient(api_key=api_keys["apollo"]) if "apollo" in api_keys else None
-    )
+    apollo_client = ApolloClient(api_key=api_keys["apollo"]) if "apollo" in api_keys else None
 
     researcher = ResearcherAgent(anthropic_client, tavily_client, scraper, apollo_client)
     analyst = AnalystAgent(anthropic_client)

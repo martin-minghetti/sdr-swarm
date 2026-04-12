@@ -29,11 +29,13 @@ def mock_anthropic(fixtures):
 
 def test_analyst_success(mock_anthropic, sample_profile):
     agent = AnalystAgent(anthropic_client=mock_anthropic)
-    result = agent.run(AnalystInput(
-        profile=sample_profile,
-        service_to_sell="AI automation",
-        seller_context="I build AI tools",
-    ))
+    result = agent.run(
+        AnalystInput(
+            profile=sample_profile,
+            service_to_sell="AI automation",
+            seller_context="I build AI tools",
+        )
+    )
     assert isinstance(result, OpportunityBrief)
     assert 1 <= result.opportunity_score <= 10
     assert len(result.pain_points) > 0

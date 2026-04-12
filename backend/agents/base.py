@@ -21,8 +21,7 @@ class BaseAgent(ABC):
         self.last_duration_ms: int = 0
 
     @abstractmethod
-    def build_user_message(self, input_data: BaseModel) -> str:
-        ...
+    def build_user_message(self, input_data: BaseModel) -> str: ...
 
     def run(self, input_data: BaseModel) -> BaseModel:
         start = time.monotonic()

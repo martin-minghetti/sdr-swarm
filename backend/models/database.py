@@ -25,12 +25,7 @@ class ResearchDB:
         update = {"status": status}
         if status in ("completed", "partial", "failed"):
             update["completed_at"] = datetime.now(timezone.utc).isoformat()
-        result = (
-            self._client.table("researches")
-            .update(update)
-            .eq("id", research_id)
-            .execute()
-        )
+        result = self._client.table("researches").update(update).eq("id", research_id).execute()
         return result.data[0]
 
     def save_step_result(self, research_id: str, step: str, result_data: dict) -> dict:
@@ -44,12 +39,7 @@ class ResearchDB:
         return result.data[0]
 
     def get_research(self, research_id: str) -> dict | None:
-        result = (
-            self._client.table("researches")
-            .select("*")
-            .eq("id", research_id)
-            .execute()
-        )
+        result = self._client.table("researches").select("*").eq("id", research_id).execute()
         return result.data[0] if result.data else None
 
     def get_research_results(self, research_id: str) -> list[dict]:
@@ -63,10 +53,7 @@ class ResearchDB:
 
     def list_researches(self) -> list[dict]:
         result = (
-            self._client.table("researches")
-            .select("*")
-            .order("created_at", desc=True)
-            .execute()
+            self._client.table("researches").select("*").order("created_at", desc=True).execute()
         )
         return result.data
 
@@ -83,11 +70,7 @@ class SettingsDB:
             "encrypted_value": encrypted,
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
-        result = (
-            self._client.table("api_keys")
-            .upsert(row, on_conflict="key_name")
-            .execute()
-        )
+        result = self._client.table("api_keys").upsert(row, on_conflict="key_name").execute()
         return result.data[0]
 
     def get_key(self, key_name: str) -> str | None:
@@ -102,25 +85,15 @@ class SettingsDB:
         return decrypt_value(result.data[0]["encrypted_value"], self._encryption_key)
 
     def get_all_keys(self) -> dict[str, str]:
-        result = (
-            self._client.table("api_keys")
-            .select("key_name, encrypted_value")
-            .execute()
-        )
+        result = self._client.table("api_keys").select("key_name, encrypted_value").execute()
         return {
             row["key_name"]: decrypt_value(row["encrypted_value"], self._encryption_key)
             for row in result.data
         }
 
     def get_keys_masked(self) -> dict[str, str]:
-        result = (
-            self._client.table("api_keys")
-            .select("key_name, encrypted_value")
-            .execute()
-        )
+        result = self._client.table("api_keys").select("key_name, encrypted_value").execute()
         return {
-            row["key_name"]: mask_key(
-                decrypt_value(row["encrypted_value"], self._encryption_key)
-            )
+            row["key_name"]: mask_key(decrypt_value(row["encrypted_value"], self._encryption_key))
             for row in result.data
         }

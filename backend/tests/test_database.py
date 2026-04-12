@@ -35,9 +35,7 @@ def _make_client_with_tables(**table_data):
 
 class TestResearchDB:
     def test_create_research(self):
-        client, tables = _make_client_with_tables(
-            researches=[{"id": "r1", "status": "pending"}]
-        )
+        client, tables = _make_client_with_tables(researches=[{"id": "r1", "status": "pending"}])
         db = ResearchDB(client)
         result = db.create_research("r1", {"company_name": "Acme"})
         assert result["id"] == "r1"
@@ -56,9 +54,7 @@ class TestResearchDB:
         assert call_args["status"] == "completed"
 
     def test_update_status_running_no_completed_at(self):
-        client, tables = _make_client_with_tables(
-            researches=[{"id": "r1", "status": "running"}]
-        )
+        client, tables = _make_client_with_tables(researches=[{"id": "r1", "status": "running"}])
         db = ResearchDB(client)
         db.update_status("r1", "running")
         call_args = tables["researches"].update.call_args[0][0]
@@ -74,9 +70,7 @@ class TestResearchDB:
         assert result["step"] == "researcher"
 
     def test_get_research_found(self):
-        client, tables = _make_client_with_tables(
-            researches=[{"id": "r1", "status": "completed"}]
-        )
+        client, tables = _make_client_with_tables(researches=[{"id": "r1", "status": "completed"}])
         db = ResearchDB(client)
         result = db.get_research("r1")
         assert result is not None
@@ -89,9 +83,7 @@ class TestResearchDB:
         assert result is None
 
     def test_list_researches(self):
-        client, tables = _make_client_with_tables(
-            researches=[{"id": "r1"}, {"id": "r2"}]
-        )
+        client, tables = _make_client_with_tables(researches=[{"id": "r1"}, {"id": "r2"}])
         db = ResearchDB(client)
         result = db.list_researches()
         assert len(result) == 2
@@ -110,9 +102,7 @@ class TestSettingsDB:
 
     def test_get_key_found(self):
         encrypted = encrypt_value("sk-real-key", TEST_KEY)
-        client, tables = _make_client_with_tables(
-            api_keys=[{"encrypted_value": encrypted}]
-        )
+        client, tables = _make_client_with_tables(api_keys=[{"encrypted_value": encrypted}])
         db = SettingsDB(client, TEST_KEY)
         result = db.get_key("anthropic")
         assert result == "sk-real-key"

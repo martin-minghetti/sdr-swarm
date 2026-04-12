@@ -40,6 +40,7 @@ class TavilyClient:
 
     async def search_multiple(self, queries: list[str]) -> list[TavilyResult]:
         import asyncio
+
         results_lists = await asyncio.gather(*[self.search(q) for q in queries])
         combined: list[TavilyResult] = []
         for results in results_lists:

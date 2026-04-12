@@ -34,11 +34,13 @@ def sample_brief(fixtures):
 
 def test_writer_success(mock_anthropic, sample_profile, sample_brief):
     agent = WriterAgent(anthropic_client=mock_anthropic)
-    result = agent.run(WriterInput(
-        profile=sample_profile,
-        brief=sample_brief,
-        seller_context="I build AI tools",
-    ))
+    result = agent.run(
+        WriterInput(
+            profile=sample_profile,
+            brief=sample_brief,
+            seller_context="I build AI tools",
+        )
+    )
     assert isinstance(result, OutreachDraft)
     assert result.formal.subject != ""
     assert result.casual.subject != ""
@@ -46,10 +48,12 @@ def test_writer_success(mock_anthropic, sample_profile, sample_brief):
 
 def test_writer_prompt_includes_context(mock_anthropic, sample_profile, sample_brief):
     agent = WriterAgent(anthropic_client=mock_anthropic)
-    agent.run(WriterInput(
-        profile=sample_profile,
-        brief=sample_brief,
-        seller_context="I build AI tools for SMBs",
-    ))
+    agent.run(
+        WriterInput(
+            profile=sample_profile,
+            brief=sample_brief,
+            seller_context="I build AI tools for SMBs",
+        )
+    )
     call_args = mock_anthropic.generate_structured.call_args
     assert "AI tools for SMBs" in call_args.kwargs["user_message"]

@@ -32,8 +32,13 @@ Set website_extractable to false if no website content was provided."""
 
 
 class ResearcherAgent:
-    def __init__(self, anthropic_client: AnthropicClient, tavily_client: TavilyClient,
-                 scraper: WebScraper, apollo_client: ApolloClient | None = None):
+    def __init__(
+        self,
+        anthropic_client: AnthropicClient,
+        tavily_client: TavilyClient,
+        scraper: WebScraper,
+        apollo_client: ApolloClient | None = None,
+    ):
         self._anthropic = anthropic_client
         self._tavily = tavily_client
         self._scraper = scraper
@@ -44,7 +49,8 @@ class ResearcherAgent:
         start = time.monotonic()
         queries = self._generate_queries(input_data)
         search_results, scraper_result, apollo_result = await self._gather_data(
-            queries, input_data.company_url,
+            queries,
+            input_data.company_url,
         )
         raw_context = self._build_context(search_results, scraper_result, apollo_result)
         profile = self._synthesize(input_data.company_name, raw_context)
@@ -106,8 +112,8 @@ class ResearcherAgent:
                 "No content extracted.\n"
             )
         if apollo_result:
-            techs = ', '.join(apollo_result.technologies)
-            keywords = ', '.join(apollo_result.keywords)
+            techs = ", ".join(apollo_result.technologies)
+            keywords = ", ".join(apollo_result.keywords)
             parts.append(
                 f"## Apollo Enrichment Data\n"
                 f"Name: {apollo_result.name}\n"

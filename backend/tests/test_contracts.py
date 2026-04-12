@@ -36,9 +36,7 @@ def test_company_profile_with_data_points():
         size=DataPoint(value="50-200 employees", confidence="medium", source="Tavily"),
         tech_stack=[DataPoint(value="React", confidence="high", source="BuiltWith via Tavily")],
         funding=None,
-        recent_news=[
-            SourcedFact(fact="Raised Series A", source="TechCrunch", confidence="high")
-        ],
+        recent_news=[SourcedFact(fact="Raised Series A", source="TechCrunch", confidence="high")],
         website_extractable=True,
         raw_sources=["https://acme.com", "https://techcrunch.com/acme"],
     )

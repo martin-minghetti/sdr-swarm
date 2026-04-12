@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class StructuredOutputError(Exception):
     """Raised when Claude's response can't be parsed into the expected schema."""
+
     pass
 
 
@@ -27,8 +28,7 @@ class AnthropicClient:
     ) -> BaseModel:
         schema_json = json.dumps(output_schema.model_json_schema(), indent=2)
         full_prompt = (
-            f"{user_message}\n\n"
-            f"Respond with ONLY valid JSON matching this schema:\n{schema_json}"
+            f"{user_message}\n\nRespond with ONLY valid JSON matching this schema:\n{schema_json}"
         )
 
         response = self._client.messages.create(

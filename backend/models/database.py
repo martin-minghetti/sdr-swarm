@@ -10,6 +10,10 @@ class ResearchDB:
     def create_research(self, research_id: str, input_data: dict) -> dict:
         row = {
             "id": research_id,
+            "company_name": input_data.get("company_name", ""),
+            "company_url": input_data.get("company_url"),
+            "service_to_sell": input_data.get("service_to_sell"),
+            "seller_context": input_data.get("seller_context"),
             "status": "pending",
             "input_data": input_data,
             "created_at": datetime.now(timezone.utc).isoformat(),

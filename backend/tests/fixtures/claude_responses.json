@@ -1,0 +1,49 @@
+{
+  "researcher_queries": "1. Acme Corp company overview\n2. Acme Corp funding news 2026\n3. Acme Corp technology stack\n4. Acme Corp competitors manufacturing",
+  "researcher_profile": {
+    "company_name": "Acme Corp",
+    "description": "A leading manufacturer of enterprise widgets, serving 500+ clients worldwide with AI-powered manufacturing solutions.",
+    "industry": "Manufacturing / Enterprise Software",
+    "size": {"value": "150 employees", "confidence": "high", "source": "Apollo enrichment + Tavily search"},
+    "tech_stack": [
+      {"value": "React", "confidence": "high", "source": "Apollo technologies list"},
+      {"value": "Python", "confidence": "high", "source": "Apollo technologies list"},
+      {"value": "AWS", "confidence": "high", "source": "Apollo technologies list"}
+    ],
+    "funding": {"value": "$20M Series B led by Sequoia Capital (Jan 2026)", "confidence": "high", "source": "TechCrunch via Tavily search"},
+    "recent_news": [
+      {"fact": "Raised $20M Series B round led by Sequoia Capital", "source": "TechCrunch", "confidence": "high"},
+      {"fact": "Expanding AI-powered manufacturing line", "source": "TechCrunch", "confidence": "high"}
+    ],
+    "website_extractable": true,
+    "raw_sources": ["https://acme.com/about", "https://techcrunch.com/2026/01/acme-series-b", "https://g2.com/products/acme-corp"]
+  },
+  "analyst_brief": {
+    "pain_points": ["Scaling customer support as client base grows", "Manual QA processes in manufacturing line", "Need for better data analytics across operations"],
+    "opportunity_fit": "Strong — Acme is expanding their AI capabilities (Series B) and likely needs automation for growing support volume.",
+    "expected_objections": ["Already investing in in-house AI team", "Budget may be allocated to manufacturing expansion", "May prefer enterprise vendors over freelancers"],
+    "opportunity_score": 7,
+    "reasoning": "Recent funding + AI expansion signals openness to AI solutions. Growing team means growing operational complexity."
+  },
+  "writer_draft": {
+    "formal": {
+      "subject": "AI automation opportunity for Acme Corp's growing operations",
+      "body": "Dear Acme Corp team,\n\nCongratulations on the recent Series B.",
+      "call_to_action": "Would 15 minutes this week work to explore this?"
+    },
+    "casual": {
+      "subject": "Quick idea re: Acme's support scaling",
+      "body": "Hey!\n\nSaw the news about Acme's Series B — congrats!",
+      "call_to_action": "Want to hop on a quick call this week?"
+    }
+  },
+  "scorer_report": {
+    "overall_confidence": "medium",
+    "verified_facts": 5,
+    "inferred_facts": 3,
+    "uncertain_facts": 1,
+    "sources_used": ["TechCrunch via Tavily", "Apollo enrichment", "G2 reviews via Tavily", "Company website"],
+    "research_gaps": ["No direct employee count verification", "No customer testimonials found", "Competitor landscape not deeply analyzed"],
+    "recommendations": ["Verify employee count via LinkedIn", "Check Glassdoor for internal culture signals"]
+  }
+}

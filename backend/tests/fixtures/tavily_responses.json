@@ -1,0 +1,27 @@
+{
+  "search_success": {
+    "results": [
+      {
+        "title": "Acme Corp - About Us",
+        "url": "https://acme.com/about",
+        "content": "Acme Corp is a leading manufacturer of widgets, founded in 2015. We serve 500+ enterprise clients worldwide with a team of 150 employees.",
+        "score": 0.95
+      },
+      {
+        "title": "Acme Corp Raises $20M Series B - TechCrunch",
+        "url": "https://techcrunch.com/2026/01/acme-series-b",
+        "content": "Widget manufacturer Acme Corp announced a $20M Series B round led by Sequoia Capital. The company plans to expand its AI-powered manufacturing line.",
+        "score": 0.88
+      },
+      {
+        "title": "Acme Corp Reviews - G2",
+        "url": "https://g2.com/products/acme-corp",
+        "content": "Acme Corp uses React frontend, Python backend, and AWS infrastructure according to their engineering blog.",
+        "score": 0.72
+      }
+    ]
+  },
+  "search_empty": {
+    "results": []
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "enrich_success": {
+    "organization": {
+      "name": "Acme Corp",
+      "website_url": "https://acme.com",
+      "industry": "Manufacturing",
+      "estimated_num_employees": 150,
+      "annual_revenue_printed": "$10M-$50M",
+      "technologies": ["React", "Python", "AWS", "PostgreSQL"],
+      "keywords": ["widgets", "manufacturing", "enterprise"],
+      "linkedin_url": "https://linkedin.com/company/acme-corp"
+    }
+  },
+  "enrich_not_found": {
+    "organization": null
+  }
+}

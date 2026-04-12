@@ -8,10 +8,10 @@ interface Props {
 }
 
 const TABS = [
-  { key: "researcher", label: "Company Profile", icon: "building-2" },
-  { key: "analyst", label: "Opportunity Analysis", icon: "chart-bar" },
-  { key: "writer", label: "Outreach Draft", icon: "pen-tool" },
-  { key: "scorer", label: "Quality Report", icon: "shield-check" },
+  { key: "researcher", label: "Company Profile" },
+  { key: "analyst", label: "Opportunity Analysis" },
+  { key: "writer", label: "Outreach Draft" },
+  { key: "scorer", label: "Quality Report" },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -23,7 +23,7 @@ export default function ResultTabs({ results }: Props) {
 
   if (results.length === 0) {
     return (
-      <div className="text-center py-12 text-zinc-500">
+      <div className="text-center py-12 text-text-muted">
         No results yet.
       </div>
     );
@@ -32,7 +32,7 @@ export default function ResultTabs({ results }: Props) {
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex border-b border-zinc-200">
+      <div className="flex gap-1 mb-6">
         {TABS.map((tab) => {
           const available = !!resultMap[tab.key];
           return (
@@ -40,12 +40,12 @@ export default function ResultTabs({ results }: Props) {
               key={tab.key}
               onClick={() => available && setActive(tab.key)}
               disabled={!available}
-              className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              className={`rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 active === tab.key
-                  ? "border-blue-600 text-blue-600"
+                  ? "shadow-[var(--shadow-neu-inset)] text-accent font-semibold"
                   : available
-                  ? "border-transparent text-zinc-500 hover:text-zinc-700 hover:border-zinc-300"
-                  : "border-transparent text-zinc-300 cursor-not-allowed"
+                  ? "shadow-[var(--shadow-neu-sm)] text-text-secondary hover:shadow-[var(--shadow-neu-raised)] hover:text-text-primary"
+                  : "text-text-muted opacity-40 cursor-not-allowed"
               }`}
             >
               {tab.label}
@@ -55,7 +55,7 @@ export default function ResultTabs({ results }: Props) {
       </div>
 
       {/* Tab content */}
-      <div className="pt-6">
+      <div className="animate-fade-in">
         {active === "researcher" && resultMap.researcher && (
           <CompanyProfileView data={resultMap.researcher as CompanyProfile} />
         )}
@@ -73,33 +73,31 @@ export default function ResultTabs({ results }: Props) {
   );
 }
 
-/* ── Confidence Badge ────────────────────────────────── */
+/* -- Confidence Badge ---------------------------------------- */
 
 function ConfidenceBadge({ level }: { level: "high" | "medium" | "low" }) {
   const styles = {
-    high: "bg-emerald-100 text-emerald-700",
-    medium: "bg-amber-100 text-amber-700",
-    low: "bg-red-100 text-red-700",
+    high: "text-[var(--color-status-completed)] bg-[var(--color-status-completed-bg)]",
+    medium: "text-[var(--color-status-pending)] bg-[var(--color-status-pending-bg)]",
+    low: "text-[var(--color-status-failed)] bg-[var(--color-status-failed-bg)]",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium capitalize ${styles[level]}`}>
+    <span className={`inline-flex items-center rounded-xl px-2 py-0.5 text-[11px] font-semibold capitalize ${styles[level]}`}>
       {level}
     </span>
   );
 }
 
-/* ── Company Profile Tab ─────────────────────────────── */
+/* -- Company Profile Tab ------------------------------------- */
 
 function CompanyProfileView({ data }: { data: CompanyProfile }) {
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
-        <h3 className="text-lg font-semibold text-zinc-900">{data.company_name}</h3>
-        <p className="mt-1 text-sm text-zinc-600">{data.description}</p>
+        <h3 className="text-lg font-semibold text-text-primary">{data.company_name}</h3>
+        <p className="mt-1 text-sm text-text-secondary">{data.description}</p>
       </div>
 
-      {/* Key Info Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <InfoCard label="Industry" value={data.industry} />
         {data.size && (
@@ -114,15 +112,14 @@ function CompanyProfileView({ data }: { data: CompanyProfile }) {
         )}
       </div>
 
-      {/* Tech Stack */}
       {data.tech_stack.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-zinc-700 mb-2">Tech Stack</h4>
+          <h4 className="text-sm font-semibold text-text-primary mb-2">Tech Stack</h4>
           <div className="flex flex-wrap gap-2">
             {data.tech_stack.map((t, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-700"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-surface-0 px-3 py-1.5 text-xs font-medium text-text-secondary shadow-[var(--shadow-neu-sm)]"
               >
                 {t.value}
                 <ConfidenceBadge level={t.confidence} />
@@ -132,17 +129,16 @@ function CompanyProfileView({ data }: { data: CompanyProfile }) {
         </div>
       )}
 
-      {/* Recent News */}
       {data.recent_news.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-zinc-700 mb-2">Recent News</h4>
+          <h4 className="text-sm font-semibold text-text-primary mb-2">Recent News</h4>
           <ul className="space-y-2">
             {data.recent_news.map((news, i) => (
               <li key={i} className="flex items-start gap-2 text-sm">
-                <span className="mt-0.5 text-zinc-400">--</span>
+                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-accent shrink-0" />
                 <div>
-                  <span className="text-zinc-800">{news.fact}</span>
-                  <span className="ml-2 text-zinc-400 text-xs">({news.source})</span>
+                  <span className="text-text-primary">{news.fact}</span>
+                  <span className="ml-2 text-text-muted text-xs">({news.source})</span>
                   <span className="ml-1.5"><ConfidenceBadge level={news.confidence} /></span>
                 </div>
               </li>
@@ -151,13 +147,12 @@ function CompanyProfileView({ data }: { data: CompanyProfile }) {
         </div>
       )}
 
-      {/* Sources */}
       {data.raw_sources.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-zinc-700 mb-2">Sources</h4>
+          <h4 className="text-sm font-semibold text-text-primary mb-2">Sources</h4>
           <ul className="space-y-1">
             {data.raw_sources.map((src, i) => (
-              <li key={i} className="text-xs text-zinc-500 truncate">{src}</li>
+              <li key={i} className="text-xs text-text-muted font-mono truncate">{src}</li>
             ))}
           </ul>
         </div>
@@ -168,71 +163,66 @@ function CompanyProfileView({ data }: { data: CompanyProfile }) {
 
 function InfoCard({ label, value, children }: { label: string; value: string; children?: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
-      <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide">{label}</p>
+    <div className="rounded-2xl bg-surface-0 p-4 shadow-[var(--shadow-neu-inset)]">
+      <p className="text-[10px] font-semibold text-text-muted uppercase tracking-widest">{label}</p>
       <div className="mt-1 flex items-center gap-2">
-        <p className="text-sm font-semibold text-zinc-900">{value}</p>
+        <p className="text-sm font-semibold text-text-primary">{value}</p>
         {children}
       </div>
     </div>
   );
 }
 
-/* ── Opportunity Analysis Tab ────────────────────────── */
+/* -- Opportunity Analysis Tab -------------------------------- */
 
 function OpportunityAnalysisView({ data }: { data: OpportunityBrief }) {
   const scoreColor =
     data.opportunity_score >= 7
-      ? "text-emerald-600 bg-emerald-50 border-emerald-200"
+      ? "text-[var(--color-status-completed)]"
       : data.opportunity_score >= 4
-      ? "text-amber-600 bg-amber-50 border-amber-200"
-      : "text-red-600 bg-red-50 border-red-200";
+      ? "text-[var(--color-status-pending)]"
+      : "text-[var(--color-status-failed)]";
 
   return (
     <div className="space-y-6">
-      {/* Score */}
       <div className="flex items-center gap-4">
-        <div className={`flex items-center justify-center w-16 h-16 rounded-xl border-2 text-2xl font-bold ${scoreColor}`}>
+        <div className={`flex items-center justify-center w-16 h-16 rounded-2xl shadow-[var(--shadow-neu-raised)] text-2xl font-bold font-mono ${scoreColor}`}>
           {data.opportunity_score}
         </div>
         <div>
-          <p className="text-sm font-semibold text-zinc-900">Opportunity Score</p>
-          <p className="text-xs text-zinc-500">out of 10</p>
+          <p className="text-sm font-semibold text-text-primary">Opportunity Score</p>
+          <p className="text-xs text-text-muted">out of 10</p>
         </div>
       </div>
 
-      {/* Fit */}
       <div>
-        <h4 className="text-sm font-semibold text-zinc-700 mb-1">Opportunity Fit</h4>
-        <p className="text-sm text-zinc-600 leading-relaxed">{data.opportunity_fit}</p>
+        <h4 className="text-sm font-semibold text-text-primary mb-1">Opportunity Fit</h4>
+        <p className="text-sm text-text-secondary leading-relaxed">{data.opportunity_fit}</p>
       </div>
 
-      {/* Reasoning */}
       <div>
-        <h4 className="text-sm font-semibold text-zinc-700 mb-1">Reasoning</h4>
-        <p className="text-sm text-zinc-600 leading-relaxed">{data.reasoning}</p>
+        <h4 className="text-sm font-semibold text-text-primary mb-1">Reasoning</h4>
+        <p className="text-sm text-text-secondary leading-relaxed">{data.reasoning}</p>
       </div>
 
-      {/* Pain Points */}
       <div>
-        <h4 className="text-sm font-semibold text-zinc-700 mb-2">Pain Points</h4>
+        <h4 className="text-sm font-semibold text-text-primary mb-2">Pain Points</h4>
         <ul className="space-y-1.5">
           {data.pain_points.map((p, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-zinc-700">
-              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
+            <li key={i} className="flex items-start gap-2 text-sm text-text-secondary">
+              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-accent shrink-0" />
               {p}
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Objections */}
       <div>
-        <h4 className="text-sm font-semibold text-zinc-700 mb-2">Expected Objections</h4>
+        <h4 className="text-sm font-semibold text-text-primary mb-2">Expected Objections</h4>
         <ul className="space-y-1.5">
           {data.expected_objections.map((o, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-zinc-700">
-              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+            <li key={i} className="flex items-start gap-2 text-sm text-text-secondary">
+              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-status-pending)] shrink-0" />
               {o}
             </li>
           ))}
@@ -242,7 +232,7 @@ function OpportunityAnalysisView({ data }: { data: OpportunityBrief }) {
   );
 }
 
-/* ── Outreach Draft Tab ──────────────────────────────── */
+/* -- Outreach Draft Tab -------------------------------------- */
 
 function OutreachDraftView({ data }: { data: OutreachDraft }) {
   const [variant, setVariant] = useState<"formal" | "casual">("formal");
@@ -250,16 +240,15 @@ function OutreachDraftView({ data }: { data: OutreachDraft }) {
 
   return (
     <div className="space-y-4">
-      {/* Variant toggle */}
-      <div className="inline-flex rounded-lg bg-zinc-100 p-1">
+      <div className="inline-flex rounded-xl bg-surface-0 shadow-[var(--shadow-neu-inset)] p-1">
         {(["formal", "casual"] as const).map((v) => (
           <button
             key={v}
             onClick={() => setVariant(v)}
-            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-xl px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
               variant === v
-                ? "bg-white text-zinc-900 shadow-sm"
-                : "text-zinc-500 hover:text-zinc-700"
+                ? "shadow-[var(--shadow-neu-raised)] text-text-primary"
+                : "text-text-muted hover:text-text-secondary"
             }`}
           >
             {v === "formal" ? "Formal" : "Casual"}
@@ -267,36 +256,32 @@ function OutreachDraftView({ data }: { data: OutreachDraft }) {
         ))}
       </div>
 
-      {/* Email preview */}
-      <div className="rounded-xl border border-zinc-200 bg-white overflow-hidden">
-        {/* Subject */}
-        <div className="border-b border-zinc-100 px-5 py-3">
-          <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide">Subject</p>
-          <p className="mt-0.5 text-sm font-semibold text-zinc-900">{email.subject}</p>
+      <div className="rounded-2xl bg-surface-0 shadow-[var(--shadow-neu-raised)] overflow-hidden">
+        <div className="border-b border-border px-5 py-3">
+          <p className="text-[10px] font-semibold text-text-muted uppercase tracking-widest">Subject</p>
+          <p className="mt-0.5 text-sm font-semibold text-text-primary">{email.subject}</p>
         </div>
 
-        {/* Body */}
         <div className="px-5 py-4">
-          <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-wrap">{email.body}</p>
+          <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap">{email.body}</p>
         </div>
 
-        {/* CTA */}
-        <div className="border-t border-zinc-100 px-5 py-3 bg-zinc-50/50">
-          <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide">Call to Action</p>
-          <p className="mt-0.5 text-sm text-blue-600 font-medium">{email.call_to_action}</p>
+        <div className="border-t border-border px-5 py-3 bg-surface-2/30">
+          <p className="text-[10px] font-semibold text-text-muted uppercase tracking-widest">Call to Action</p>
+          <p className="mt-0.5 text-sm text-accent font-medium">{email.call_to_action}</p>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── Quality Report Tab ──────────────────────────────── */
+/* -- Quality Report Tab -------------------------------------- */
 
 function QualityReportView({ data }: { data: QualityReport }) {
-  const confColor = {
-    high: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    medium: "bg-amber-100 text-amber-700 border-amber-200",
-    low: "bg-red-100 text-red-700 border-red-200",
+  const confStyles = {
+    high: "text-[var(--color-status-completed)] bg-[var(--color-status-completed-bg)]",
+    medium: "text-[var(--color-status-pending)] bg-[var(--color-status-pending-bg)]",
+    low: "text-[var(--color-status-failed)] bg-[var(--color-status-failed-bg)]",
   };
 
   const total = data.verified_facts + data.inferred_facts + data.uncertain_facts;
@@ -306,40 +291,36 @@ function QualityReportView({ data }: { data: QualityReport }) {
 
   return (
     <div className="space-y-6">
-      {/* Overall confidence */}
       <div className="flex items-center gap-3">
-        <span className="text-sm font-semibold text-zinc-700">Overall Confidence:</span>
-        <span className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold capitalize ${confColor[data.overall_confidence]}`}>
+        <span className="text-sm font-semibold text-text-primary">Overall Confidence:</span>
+        <span className={`inline-flex items-center rounded-xl px-3 py-1 text-sm font-semibold capitalize ${confStyles[data.overall_confidence]}`}>
           {data.overall_confidence}
         </span>
       </div>
 
-      {/* Fact breakdown */}
       <div>
-        <h4 className="text-sm font-semibold text-zinc-700 mb-3">Fact Breakdown</h4>
+        <h4 className="text-sm font-semibold text-text-primary mb-3">Fact Breakdown</h4>
         <div className="grid grid-cols-3 gap-3">
-          <FactStat label="Verified" count={data.verified_facts} pct={verifiedPct} color="emerald" />
-          <FactStat label="Inferred" count={data.inferred_facts} pct={inferredPct} color="amber" />
-          <FactStat label="Uncertain" count={data.uncertain_facts} pct={uncertainPct} color="red" />
+          <FactStat label="Verified" count={data.verified_facts} pct={verifiedPct} color="completed" />
+          <FactStat label="Inferred" count={data.inferred_facts} pct={inferredPct} color="pending" />
+          <FactStat label="Uncertain" count={data.uncertain_facts} pct={uncertainPct} color="failed" />
         </div>
-        {/* Bar */}
         {total > 0 && (
-          <div className="mt-3 flex h-2 rounded-full overflow-hidden bg-zinc-100">
-            <div className="bg-emerald-500 transition-all" style={{ width: `${verifiedPct}%` }} />
-            <div className="bg-amber-400 transition-all" style={{ width: `${inferredPct}%` }} />
-            <div className="bg-red-400 transition-all" style={{ width: `${uncertainPct}%` }} />
+          <div className="mt-3 flex h-2 rounded-full overflow-hidden bg-surface-0 shadow-[var(--shadow-neu-inset)] p-[2px]">
+            <div className="bg-[var(--color-status-completed)] rounded-full transition-all" style={{ width: `${verifiedPct}%` }} />
+            <div className="bg-[var(--color-status-pending)] transition-all" style={{ width: `${inferredPct}%` }} />
+            <div className="bg-[var(--color-status-failed)] rounded-full transition-all" style={{ width: `${uncertainPct}%` }} />
           </div>
         )}
       </div>
 
-      {/* Research Gaps */}
       {data.research_gaps.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-zinc-700 mb-2">Research Gaps</h4>
+          <h4 className="text-sm font-semibold text-text-primary mb-2">Research Gaps</h4>
           <ul className="space-y-1.5">
             {data.research_gaps.map((gap, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-zinc-700">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+              <li key={i} className="flex items-start gap-2 text-sm text-text-secondary">
+                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-status-pending)] shrink-0" />
                 {gap}
               </li>
             ))}
@@ -347,14 +328,13 @@ function QualityReportView({ data }: { data: QualityReport }) {
         </div>
       )}
 
-      {/* Recommendations */}
       {data.recommendations.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-zinc-700 mb-2">Recommendations</h4>
+          <h4 className="text-sm font-semibold text-text-primary mb-2">Recommendations</h4>
           <ul className="space-y-1.5">
             {data.recommendations.map((rec, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-zinc-700">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
+              <li key={i} className="flex items-start gap-2 text-sm text-text-secondary">
+                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-accent shrink-0" />
                 {rec}
               </li>
             ))}
@@ -362,13 +342,12 @@ function QualityReportView({ data }: { data: QualityReport }) {
         </div>
       )}
 
-      {/* Sources */}
       {data.sources_used.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-zinc-700 mb-2">Sources Used ({data.sources_used.length})</h4>
+          <h4 className="text-sm font-semibold text-text-primary mb-2">Sources Used ({data.sources_used.length})</h4>
           <ul className="space-y-1">
             {data.sources_used.map((src, i) => (
-              <li key={i} className="text-xs text-zinc-500 truncate">{src}</li>
+              <li key={i} className="text-xs text-text-muted font-mono truncate">{src}</li>
             ))}
           </ul>
         </div>
@@ -378,15 +357,10 @@ function QualityReportView({ data }: { data: QualityReport }) {
 }
 
 function FactStat({ label, count, pct, color }: { label: string; count: number; pct: number; color: string }) {
-  const colorMap: Record<string, string> = {
-    emerald: "text-emerald-600",
-    amber: "text-amber-600",
-    red: "text-red-600",
-  };
   return (
-    <div className="rounded-lg border border-zinc-200 bg-zinc-50/50 p-3 text-center">
-      <p className={`text-2xl font-bold ${colorMap[color]}`}>{count}</p>
-      <p className="text-xs text-zinc-500 mt-0.5">{label} ({pct}%)</p>
+    <div className="rounded-2xl bg-surface-0 p-3 text-center shadow-[var(--shadow-neu-inset)]">
+      <p className={`text-2xl font-bold font-mono text-[var(--color-status-${color})]`}>{count}</p>
+      <p className="text-xs text-text-muted mt-0.5">{label} ({pct}%)</p>
     </div>
   );
 }

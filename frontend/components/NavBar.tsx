@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_ITEMS = [
-  { href: "/", label: "New Research" },
+  { href: "/", label: "Home" },
+  { href: "/new", label: "New Research" },
   { href: "/history", label: "History" },
   { href: "/settings", label: "Settings" },
 ];
@@ -13,36 +15,41 @@ export default function NavBar() {
   const pathname = usePathname();
 
   return (
-    <header className="border-b border-zinc-200 bg-white">
-      <div className="mx-auto max-w-5xl flex items-center justify-between px-6 h-14">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-600 text-white text-sm font-bold">
-            S
-          </div>
-          <span className="text-base font-bold text-zinc-900 tracking-tight">SDR Swarm</span>
+    <header className="bg-surface-0 h-16 flex items-center">
+      <div className="mx-auto max-w-5xl w-full flex items-center justify-between px-6">
+        <Link
+          href="/"
+          className="btn-neu shadow-[var(--shadow-neu-sm)] rounded-xl px-4 py-2 hover:shadow-[var(--shadow-neu-raised)]"
+        >
+          <span className="text-base font-bold text-text-primary tracking-tight">
+            SDR Swarm
+          </span>
         </Link>
 
-        <nav className="flex items-center gap-1">
-          {NAV_ITEMS.map((item) => {
-            const isActive =
-              item.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-zinc-100 text-zinc-900"
-                    : "text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="flex items-center gap-2">
+          <nav className="flex items-center gap-1">
+            {NAV_ITEMS.map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-link rounded-xl px-3.5 py-2 text-sm font-medium ${
+                    isActive
+                      ? "shadow-[var(--shadow-neu-inset)] text-accent font-semibold"
+                      : "text-text-secondary hover:shadow-[var(--shadow-neu-sm)] hover:text-text-primary"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

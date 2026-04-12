@@ -63,20 +63,20 @@ export default function ApiKeySettings() {
     <div className="space-y-6">
       {KEY_CONFIGS.map((cfg) => (
         <div key={cfg.name}>
-          <label className="block text-sm font-medium text-zinc-700 mb-1.5">
+          <label className="block text-sm font-medium text-text-primary mb-1.5">
             {cfg.label}
-            {cfg.required && <span className="text-red-500 ml-1">*</span>}
+            {cfg.required && <span className="text-[var(--color-status-failed)] ml-1">*</span>}
           </label>
 
           {maskedKeys[cfg.name] && (
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-mono text-zinc-500 bg-zinc-100 rounded px-2 py-1">
+              <span className="text-xs font-mono text-text-muted bg-surface-2 rounded-lg px-2 py-1">
                 {maskedKeys[cfg.name]}
               </span>
               {validation[cfg.name] !== undefined && (
                 <span
                   className={`text-xs font-medium ${
-                    validation[cfg.name] ? "text-emerald-600" : "text-red-600"
+                    validation[cfg.name] ? "text-[var(--color-status-completed)]" : "text-[var(--color-status-failed)]"
                   }`}
                 >
                   {validation[cfg.name] ? "Valid" : "Invalid"}
@@ -90,17 +90,17 @@ export default function ApiKeySettings() {
             placeholder={maskedKeys[cfg.name] ? "Enter new key to replace..." : cfg.placeholder}
             value={inputs[cfg.name] || ""}
             onChange={(e) => setInputs({ ...inputs, [cfg.name]: e.target.value })}
-            className="w-full rounded-lg border border-zinc-300 px-3.5 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-colors"
+            className="w-full rounded-xl px-3.5 py-2.5 bg-surface-0 shadow-[var(--shadow-neu-inset)] text-sm text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all"
           />
         </div>
       ))}
 
       {message && (
         <div
-          className={`rounded-lg px-4 py-3 text-sm ${
+          className={`rounded-xl px-4 py-3 text-sm shadow-[var(--shadow-neu-inset)] ${
             message.type === "success"
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-700"
-              : "bg-red-50 border border-red-200 text-red-700"
+              ? "text-[var(--color-status-completed)]"
+              : "text-[var(--color-status-failed)]"
           }`}
         >
           {message.text}
@@ -111,14 +111,14 @@ export default function ApiKeySettings() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="btn-neu-primary rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-neu-sm)] hover:shadow-[var(--shadow-neu-raised)] hover:bg-accent-dim disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {saving ? "Saving..." : "Save Keys"}
         </button>
         <button
           onClick={handleValidate}
           disabled={validating}
-          className="rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="btn-neu rounded-xl bg-surface-0 px-4 py-2.5 text-sm font-semibold text-text-secondary shadow-[var(--shadow-neu-sm)] hover:shadow-[var(--shadow-neu-raised)] hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {validating ? "Validating..." : "Validate Keys"}
         </button>

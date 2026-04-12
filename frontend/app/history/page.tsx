@@ -17,27 +17,27 @@ export default function HistoryPage() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-2xl font-bold text-zinc-900 tracking-tight mb-8">
+    <div className="mx-auto max-w-3xl px-6 py-12">
+      <h1 className="text-2xl font-semibold text-text-primary tracking-tight mb-8">
         Research History
       </h1>
 
       {loading && (
-        <div className="text-center py-12 text-zinc-400 text-sm">Loading...</div>
+        <div className="text-center py-12 text-text-muted text-sm">Loading...</div>
       )}
 
       {error && (
-        <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl shadow-[var(--shadow-neu-inset)] px-4 py-3 text-sm text-[var(--color-status-failed)]">
           {error}
         </div>
       )}
 
       {!loading && !error && researches.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-zinc-400 text-sm">No researches yet.</p>
+          <p className="text-text-muted text-sm">No researches yet.</p>
           <Link
-            href="/"
-            className="mt-3 inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700"
+            href="/new"
+            className="mt-3 inline-flex items-center text-sm font-medium text-accent hover:text-accent-dim transition-colors"
           >
             Start your first research &rarr;
           </Link>
@@ -45,18 +45,18 @@ export default function HistoryPage() {
       )}
 
       {!loading && researches.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {researches.map((r) => (
             <Link
               key={r.id}
               href={`/research/${r.id}`}
-              className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-5 py-4 shadow-sm hover:border-zinc-300 hover:shadow transition-all group"
+              className="flex items-center justify-between rounded-2xl bg-surface-0 px-5 py-4 shadow-[var(--shadow-neu-raised)] hover:shadow-[var(--shadow-neu-hover)] transition-shadow duration-200 group"
             >
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-zinc-900 group-hover:text-blue-600 transition-colors truncate">
-                  {r.input_data.company_name}
+                <p className="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors truncate">
+                  {r.input_data?.company_name || "Unknown"}
                 </p>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <p className="text-xs text-text-muted mt-0.5">
                   {new Date(r.created_at).toLocaleDateString(undefined, {
                     year: "numeric",
                     month: "short",
@@ -77,14 +77,14 @@ export default function HistoryPage() {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    pending: "bg-zinc-100 text-zinc-600",
-    running: "bg-blue-100 text-blue-700",
-    completed: "bg-emerald-100 text-emerald-700",
-    partial: "bg-amber-100 text-amber-700",
-    failed: "bg-red-100 text-red-700",
+    pending: "text-[var(--color-status-pending)] bg-[var(--color-status-pending-bg)]",
+    running: "text-[var(--color-status-running)] bg-[var(--color-status-running-bg)]",
+    completed: "text-[var(--color-status-completed)] bg-[var(--color-status-completed-bg)]",
+    partial: "text-[var(--color-status-partial)] bg-[var(--color-status-partial-bg)]",
+    failed: "text-[var(--color-status-failed)] bg-[var(--color-status-failed-bg)]",
   };
   return (
-    <span className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize ${styles[status] || styles.pending}`}>
+    <span className={`shrink-0 inline-flex items-center rounded-xl px-2.5 py-1 text-[11px] font-semibold capitalize ${styles[status] || styles.pending}`}>
       {status}
     </span>
   );

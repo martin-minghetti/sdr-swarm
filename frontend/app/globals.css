@@ -1,20 +1,104 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #171717;
+  /* Surface colors — neomorphic base */
+  --color-surface-0: #e3e6ec;
+  --color-surface-1: #e3e6ec;
+  --color-surface-2: #d5d8de;
+  --color-surface-3: #cdd0d6;
+
+  /* Text hierarchy */
+  --color-text-primary: #2d3142;
+  --color-text-secondary: #5a5f72;
+  --color-text-muted: #8b90a0;
+
+  /* Accent */
+  --color-accent: #4a7fe5;
+  --color-accent-dim: #3a6bc7;
+
+  /* Borders */
+  --color-border: rgba(0, 0, 0, 0.04);
+  --color-border-subtle: rgba(0, 0, 0, 0.02);
+
+  /* Neomorphic shadows */
+  --shadow-neu-raised: 6px 6px 12px #b8bcc5, -6px -6px 12px #ffffff;
+  --shadow-neu-inset: inset 4px 4px 8px #b8bcc5, inset -4px -4px 8px #ffffff;
+  --shadow-neu-sm: 3px 3px 6px #b8bcc5, -3px -3px 6px #ffffff;
+  --shadow-neu-hover: 8px 8px 16px #b8bcc5, -8px -8px 16px #ffffff;
+
+  /* Status colors */
+  --color-status-pending: #d69e2e;
+  --color-status-pending-bg: rgba(214, 158, 46, 0.10);
+  --color-status-running: #4a7fe5;
+  --color-status-running-bg: rgba(74, 127, 229, 0.10);
+  --color-status-completed: #38a169;
+  --color-status-completed-bg: rgba(56, 161, 105, 0.10);
+  --color-status-partial: #d69e2e;
+  --color-status-partial-bg: rgba(214, 158, 46, 0.10);
+  --color-status-failed: #e05a4f;
+  --color-status-failed-bg: rgba(224, 90, 79, 0.10);
+}
+
+.dark {
+  --color-surface-0: #2a2d3a;
+  --color-surface-1: #2a2d3a;
+  --color-surface-2: #23252f;
+  --color-surface-3: #1e2028;
+
+  --color-text-primary: #e3e6ec;
+  --color-text-secondary: #a0a4b4;
+  --color-text-muted: #6b6f80;
+
+  --color-accent: #5a8ff0;
+  --color-accent-dim: #4a7fe5;
+
+  --color-border: rgba(255, 255, 255, 0.04);
+  --color-border-subtle: rgba(255, 255, 255, 0.02);
+
+  --shadow-neu-raised: 6px 6px 12px #1e2028, -6px -6px 12px #36394a;
+  --shadow-neu-inset: inset 4px 4px 8px #1e2028, inset -4px -4px 8px #36394a;
+  --shadow-neu-sm: 3px 3px 6px #1e2028, -3px -3px 6px #36394a;
+  --shadow-neu-hover: 8px 8px 16px #1e2028, -8px -8px 16px #36394a;
+
+  --color-status-pending-bg: rgba(214, 158, 46, 0.15);
+  --color-status-running-bg: rgba(74, 127, 229, 0.15);
+  --color-status-completed-bg: rgba(56, 161, 105, 0.15);
+  --color-status-partial-bg: rgba(214, 158, 46, 0.15);
+  --color-status-failed-bg: rgba(224, 90, 79, 0.15);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface-0: var(--color-surface-0);
+  --color-surface-1: var(--color-surface-1);
+  --color-surface-2: var(--color-surface-2);
+  --color-surface-3: var(--color-surface-3);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-accent: var(--color-accent);
+  --color-accent-dim: var(--color-accent-dim);
+  --color-border: var(--color-border);
+  --color-border-subtle: var(--color-border-subtle);
+  --font-display: var(--font-outfit);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-surface-0);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+}
+
+/* Page transitions */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fade-in {
@@ -22,6 +106,51 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+.animate-page-enter {
+  animation: page-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+/* Button interactions */
+.btn-neu {
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-neu:hover {
+  transform: translateY(-1px);
+}
+
+.btn-neu:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: var(--shadow-neu-inset);
+}
+
+.btn-neu-primary {
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-neu-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.btn-neu-primary:active {
+  transform: translateY(0px) scale(0.97);
+  filter: brightness(0.95);
+}
+
+/* Nav link transitions */
+.nav-link {
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover {
+  transform: translateY(-1px);
+}
+
+.nav-link:active {
+  transform: translateY(0px) scale(0.97);
 }

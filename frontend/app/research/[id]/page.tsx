@@ -32,7 +32,6 @@ export default function ResearchPage({ params }: { params: Promise<{ id: string 
   const [error, setError] = useState<string | null>(null);
   const subscribedRef = useRef(false);
 
-  // On mount: fetch research and decide whether to stream or show results
   useEffect(() => {
     let cleanup: (() => void) | undefined;
 
@@ -42,15 +41,12 @@ export default function ResearchPage({ params }: { params: Promise<{ id: string 
         setResearch(data.research);
         setResults(data.results);
 
-        // If already completed/partial/failed, just show results
         if (["completed", "partial", "failed"].includes(data.research.status)) {
-          // Mark step statuses from existing results
           const statuses: Record<string, "pending" | "running" | "completed" | "failed"> = {};
           for (const r of data.results) {
             statuses[r.step] = "completed";
           }
           if (data.research.status === "failed") {
-            // Find which steps are missing and mark the first missing one as failed
             for (const def of STEP_DEFS) {
               if (!statuses[def.id]) {
                 statuses[def.id] = "failed";
@@ -63,7 +59,6 @@ export default function ResearchPage({ params }: { params: Promise<{ id: string 
           return;
         }
 
-        // Subscribe to SSE stream
         if (!subscribedRef.current) {
           subscribedRef.current = true;
           cleanup = subscribeToStream(getStreamUrl(id), {
@@ -78,7 +73,6 @@ export default function ResearchPage({ params }: { params: Promise<{ id: string 
               setStepErrors((prev) => ({ ...prev, [step]: err }));
             },
             onResearchComplete: async () => {
-              // Fetch final results
               try {
                 const final = await getResearch(id);
                 setResearch(final.research);
@@ -89,7 +83,6 @@ export default function ResearchPage({ params }: { params: Promise<{ id: string 
               setComplete(true);
             },
             onError: () => {
-              // Stream ended or errored — try fetching results anyway
               getResearch(id)
                 .then((final) => {
                   setResearch(final.research);
@@ -120,15 +113,15 @@ export default function ResearchPage({ params }: { params: Promise<{ id: string 
         <div>
           <Link
             href="/history"
-            className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
+            className="text-xs text-text-muted hover:text-text-secondary transition-colors"
           >
             &larr; All Researches
           </Link>
-          <h1 className="mt-1 text-xl font-bold text-zinc-900">
+          <h1 className="mt-1 text-xl font-semibold text-text-primary">
             {research?.input_data?.company_name || "Loading..."}
           </h1>
           {research && (
-            <p className="mt-0.5 text-xs text-zinc-400">
+            <p className="mt-0.5 text-xs text-text-muted">
               Started {new Date(research.created_at).toLocaleString()}
             </p>
           )}
@@ -137,29 +130,26 @@ export default function ResearchPage({ params }: { params: Promise<{ id: string 
       </div>
 
       {error && (
-        <div className="mb-6 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+        <div className="mb-6 rounded-xl shadow-[var(--shadow-neu-inset)] px-4 py-3 text-sm text-[var(--color-status-failed)]">
           {error}
         </div>
       )}
 
-      {/* Progress tracker — always visible during run, collapsed when complete */}
       {!complete && (
-        <div className="mb-8 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm animate-fade-in">
-          <h2 className="text-sm font-semibold text-zinc-700 mb-4">Pipeline Progress</h2>
+        <div className="mb-8 rounded-2xl bg-surface-0 p-6 shadow-[var(--shadow-neu-raised)] animate-fade-in">
+          <h2 className="text-sm font-semibold text-text-primary mb-4">Pipeline Progress</h2>
           <ProgressTracker steps={steps} />
         </div>
       )}
 
-      {/* Results */}
       {complete && results.length > 0 && (
-        <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm animate-fade-in">
+        <div className="rounded-2xl bg-surface-0 p-6 shadow-[var(--shadow-neu-raised)] animate-fade-in">
           <ResultTabs results={results} />
         </div>
       )}
 
-      {/* Loading state */}
       {!complete && !error && results.length === 0 && Object.keys(stepStatuses).length === 0 && (
-        <div className="text-center py-12 text-zinc-400 text-sm">
+        <div className="text-center py-12 text-text-muted text-sm">
           Connecting to research pipeline...
         </div>
       )}
@@ -169,14 +159,14 @@ export default function ResearchPage({ params }: { params: Promise<{ id: string 
 
 function StatusPill({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    pending: "bg-zinc-100 text-zinc-600",
-    running: "bg-blue-100 text-blue-700",
-    completed: "bg-emerald-100 text-emerald-700",
-    partial: "bg-amber-100 text-amber-700",
-    failed: "bg-red-100 text-red-700",
+    pending: "text-[var(--color-status-pending)] bg-[var(--color-status-pending-bg)]",
+    running: "text-[var(--color-status-running)] bg-[var(--color-status-running-bg)]",
+    completed: "text-[var(--color-status-completed)] bg-[var(--color-status-completed-bg)]",
+    partial: "text-[var(--color-status-partial)] bg-[var(--color-status-partial-bg)]",
+    failed: "text-[var(--color-status-failed)] bg-[var(--color-status-failed-bg)]",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold capitalize ${styles[status] || styles.pending}`}>
+    <span className={`inline-flex items-center rounded-xl px-3 py-1 text-xs font-semibold capitalize ${styles[status] || styles.pending}`}>
       {status}
     </span>
   );

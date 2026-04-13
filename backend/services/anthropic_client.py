@@ -41,9 +41,7 @@ class AnthropicClient:
 
         block = response.content[0]
         if not isinstance(block, TextBlock):
-            raise StructuredOutputError(
-                f"Expected TextBlock, got {type(block).__name__}"
-            )
+            raise StructuredOutputError(f"Expected TextBlock, got {type(block).__name__}")
         text = block.text
 
         # Strip markdown fences if present

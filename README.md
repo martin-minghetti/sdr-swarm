@@ -44,7 +44,7 @@ No fine-tuning, no training data, no vendor lock-in. You bring your own API keys
 A single company URL triggers a 4-agent sequential pipeline. Each agent builds on the previous output, streaming real-time progress to the dashboard via Server-Sent Events.
 
 ```mermaid
-graph LR
+graph TD
     A[User Input] --> B[Orchestrator]
     B --> C[Researcher]
     C --> D[Analyst]

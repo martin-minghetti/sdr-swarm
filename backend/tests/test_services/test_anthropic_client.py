@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
+from anthropic.types import TextBlock
 from pydantic import BaseModel
 
 from services.anthropic_client import AnthropicClient, StructuredOutputError
@@ -17,7 +18,7 @@ def client():
 
 
 def _make_mock_response(text: str):
-    mock_block = MagicMock()
+    mock_block = MagicMock(spec=TextBlock)
     mock_block.type = "text"
     mock_block.text = text
     mock_resp = MagicMock()

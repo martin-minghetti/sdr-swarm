@@ -1,33 +1,73 @@
-# SDR Swarm
+<p align="center">
+  <img src="docs/screenshots/01-home-light.png" alt="SDR Swarm" width="800" />
+</p>
 
-SDR Swarm helps B2B teams research companies and draft personalized outreach without manual prospecting.
+<h1 align="center">SDR Swarm</h1>
 
-![Home — Light](docs/screenshots/01-home-light.png)
+<p align="center">
+  4-agent pipeline that researches a company, analyzes the opportunity, drafts personalized outreach, and scores quality.<br/>
+  <strong>~$0.12/run. Your keys. Your data.</strong>
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick Start</a> &middot;
+  <a href="#how-it-works">How It Works</a> &middot;
+  <a href="#screenshots">Screenshots</a> &middot;
+  <a href="#api-reference">API Reference</a> &middot;
+  <a href="#contributing">Contributing</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.14-blue?logo=python&logoColor=white" alt="Python 3.14" />
+  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js&logoColor=white" alt="Next.js 16" />
+  <img src="https://img.shields.io/badge/Claude-Sonnet%20%2B%20Haiku-blueviolet?logo=anthropic&logoColor=white" alt="Claude Sonnet + Haiku" />
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
+  <a href="https://github.com/martin-minghetti/sdr-swarm/actions"><img src="https://github.com/martin-minghetti/sdr-swarm/actions/workflows/test.yml/badge.svg" alt="Tests" /></a>
+</p>
+
+---
+
+## The problem
+
+B2B sales teams spend hours on manual prospecting: googling a company, reading their site, figuring out what they do, deciding if they're a good fit, then writing a cold email that doesn't sound like a template. Multiply that by 50 companies a week and you've got an SDR doing research instead of selling.
+
+## The solution
+
+SDR Swarm replaces that entire workflow with a single input: a company URL. Four AI agents run in sequence — research, analyze, write, score — and deliver a complete outreach package in 15-30 seconds for about **$0.08-0.15 per company**.
+
+No fine-tuning, no training data, no vendor lock-in. You bring your own API keys, everything runs on your infrastructure, and the results stream to your dashboard in real time.
 
 ---
 
 ## How it works
 
-SDR Swarm runs a 4-agent sequential pipeline triggered by a single company URL or domain. Each agent builds on the previous output, and the entire process streams real-time progress to the dashboard via Server-Sent Events.
+A single company URL triggers a 4-agent sequential pipeline. Each agent builds on the previous output, streaming real-time progress to the dashboard via Server-Sent Events.
 
 ```mermaid
 graph LR
     A[User Input] --> B[Orchestrator]
-    B --> C[🔍 Researcher]
-    C --> D[📊 Analyst]
-    D --> E[✍️ Writer]
-    E --> F[✅ Scorer]
+    B --> C[Researcher]
+    C --> D[Analyst]
+    D --> E[Writer]
+    E --> F[Scorer]
     F --> G[Dashboard]
 ```
 
-| Agent | Role |
-|-------|------|
-| **Researcher** | Fetches company data from Tavily search, homepage scraping, and Apollo enrichment in parallel |
-| **Analyst** | Synthesizes raw data into structured company intelligence (ICP fit, pain points, tech stack) |
-| **Writer** | Drafts a personalized cold email and LinkedIn message based on the analysis |
-| **Scorer** | Evaluates output quality and flags low-confidence results for human review |
+| Agent | What it does | Model |
+|-------|-------------|-------|
+| **Researcher** | Fetches company data from Tavily search, homepage scraping, and Apollo enrichment in parallel | Sonnet |
+| **Analyst** | Synthesizes raw data into structured intelligence — ICP fit, pain points, tech stack | Sonnet |
+| **Writer** | Drafts a personalized cold email and LinkedIn message based on the analysis | Sonnet |
+| **Scorer** | Evaluates output quality and flags low-confidence results for human review | Haiku |
 
-**Cost per research: ~$0.08–0.15** (Sonnet for research/analysis/writing, Haiku for scoring)
+**Cost per research: ~$0.08-0.15** — Sonnet for the heavy lifting, Haiku for scoring.
+
+### Design principles
+
+- **Direct SDK, no frameworks.** The orchestrator is ~80 lines of Python using the Anthropic SDK directly. No LangGraph, no CrewAI. A sequential pipeline doesn't need abstraction layers. See [DECISIONS.md](DECISIONS.md) for the full rationale.
+- **Parallel where it matters.** Agents run sequentially (each needs the previous output), but the Researcher fetches from Tavily, the homepage scraper, and Apollo simultaneously via `asyncio.gather`.
+- **SSE over WebSockets.** Progress updates are unidirectional. SSE is the correct primitive — no library, automatic reconnects, standard HTTP.
+- **BYOK.** Your keys, your costs, your rate limits. Nothing is proxied through a third-party server.
 
 ---
 
@@ -183,6 +223,27 @@ sdr-swarm/
 - [Supabase](https://supabase.com) — database and auth
 - [FastAPI](https://fastapi.tiangolo.com) — backend framework
 - [Next.js](https://nextjs.org) — frontend framework
+
+---
+
+## Contributing
+
+Contributions are welcome. If you want to help:
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Make your changes and add tests
+4. Run the test suite (`cd backend && pytest`)
+5. Open a pull request
+
+For bugs or feature requests, [open an issue](https://github.com/martin-minghetti/sdr-swarm/issues).
+
+---
+
+## Community
+
+- [Issues](https://github.com/martin-minghetti/sdr-swarm/issues) — bug reports and feature requests
+- [Discussions](https://github.com/martin-minghetti/sdr-swarm/discussions) — questions, ideas, show & tell
 
 ---
 

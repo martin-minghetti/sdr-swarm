@@ -47,6 +47,7 @@ def test_agent_retry_on_parse_failure():
 
     result = agent.run(MockInput(query="What is the answer?"))
 
+    assert isinstance(result, MockOutput)
     assert result.answer == "42"
     assert mock_client.generate_structured.call_count == 2
 

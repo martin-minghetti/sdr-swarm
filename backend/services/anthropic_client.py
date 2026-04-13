@@ -3,6 +3,7 @@ import logging
 import re
 
 import anthropic
+from anthropic.types import TextBlock
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -38,7 +39,12 @@ class AnthropicClient:
             messages=[{"role": "user", "content": full_prompt}],
         )
 
-        text = response.content[0].text
+        block = response.content[0]
+        if not isinstance(block, TextBlock):
+            raise StructuredOutputError(
+                f"Expected TextBlock, got {type(block).__name__}"
+            )
+        text = block.text
 
         # Strip markdown fences if present
         cleaned = re.sub(r"^```(?:json)?\s*\n?", "", text.strip())
@@ -66,4 +72,7 @@ class AnthropicClient:
             system=system_prompt,
             messages=[{"role": "user", "content": user_message}],
         )
-        return response.content[0].text
+        block = response.content[0]
+        if not isinstance(block, TextBlock):
+            raise ValueError(f"Expected TextBlock, got {type(block).__name__}")
+        return block.text

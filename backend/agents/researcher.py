@@ -72,16 +72,16 @@ class ResearcherAgent:
         return queries[:5]
 
     async def _gather_data(self, queries, company_url):
-        tasks = [self._tavily.search_multiple(queries)]
+        tasks: list[asyncio.Future] = [asyncio.ensure_future(self._tavily.search_multiple(queries))]
         if company_url:
-            tasks.append(self._scraper.scrape(company_url))
+            tasks.append(asyncio.ensure_future(self._scraper.scrape(company_url)))
         else:
-            tasks.append(self._noop())
+            tasks.append(asyncio.ensure_future(self._noop()))
         if self._apollo and company_url:
             domain = company_url.replace("https://", "").replace("http://", "").rstrip("/")
-            tasks.append(self._apollo.enrich_company(domain))
+            tasks.append(asyncio.ensure_future(self._apollo.enrich_company(domain)))
         else:
-            tasks.append(self._noop())
+            tasks.append(asyncio.ensure_future(self._noop()))
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
         search_results = results[0] if not isinstance(results[0], Exception) else []
@@ -126,9 +126,11 @@ class ResearcherAgent:
         return "\n".join(parts) if parts else "No data gathered."
 
     def _synthesize(self, company_name: str, raw_context: str) -> CompanyProfile:
-        return self._anthropic.generate_structured(
+        result = self._anthropic.generate_structured(
             system_prompt=SYNTHESIS_PROMPT,
             user_message=f"Research data for {company_name}:\n\n{raw_context}",
             output_schema=CompanyProfile,
             model="claude-sonnet-4-20250514",
         )
+        assert isinstance(result, CompanyProfile)
+        return result

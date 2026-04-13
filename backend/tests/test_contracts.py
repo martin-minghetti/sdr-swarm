@@ -41,6 +41,7 @@ def test_company_profile_with_data_points():
         raw_sources=["https://acme.com", "https://techcrunch.com/acme"],
     )
     assert profile.company_name == "Acme Corp"
+    assert profile.size is not None
     assert profile.size.confidence == "medium"
     assert len(profile.recent_news) == 1
 

@@ -35,4 +35,4 @@ create table if not exists api_keys (
     updated_at timestamptz not null default now()
 );
 
--- No RLS — single user portfolio project
+-- RLS enabled in 002_enable_rls.sql
